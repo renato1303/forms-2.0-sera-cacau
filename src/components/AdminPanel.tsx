@@ -60,8 +60,8 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
           parsed.googleSheetsUrl = '';
           localStorage.setItem('sensesales_integrations_config', JSON.stringify(parsed));
         }
-        if (!parsed.redirectUrl || parsed.redirectUrl.includes('contato.seracacau.com.br')) {
-          parsed.redirectUrl = 'https://obrigado.seracacau.com.br';
+        if (!parsed.redirectUrl || parsed.redirectUrl.includes('contato.seracacau.com.br') || parsed.redirectUrl.includes('obrigado.seracacau.com.br')) {
+          parsed.redirectUrl = 'https://envio.seracacau.com.br';
           localStorage.setItem('sensesales_integrations_config', JSON.stringify(parsed));
         }
         setIntegrationConfig({ ...DEFAULT_INTEGRATIONS_CONFIG, ...parsed });
@@ -1526,7 +1526,7 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
                         type="text"
                         value={integrationConfig.redirectUrl || ''}
                         onChange={(e) => saveConfig({ ...integrationConfig, redirectUrl: e.target.value })}
-                        placeholder="https://obrigado.seracacau.com.br"
+                        placeholder="https://envio.seracacau.com.br"
                         className="w-full text-xs font-mono bg-[#0D0D0D] border border-white/10 rounded-xl px-3 py-2 text-white"
                       />
                     </div>

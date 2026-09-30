@@ -35,7 +35,7 @@ export default function App() {
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
-  const [computedRedirectUrl, setComputedRedirectUrl] = useState<string>("https://obrigado.seracacau.com.br");
+  const [computedRedirectUrl, setComputedRedirectUrl] = useState<string>("https://envio.seracacau.com.br");
 
   // Final Data Capture Form State (matching the user's attached design)
   const [finalForm, setFinalForm] = useState({
@@ -424,7 +424,7 @@ export default function App() {
     
     // Redirect to configured URL in Admin Panel (or default)
     const config: IntegrationConfig = getResolvedIntegrationsConfig();
-    const targetRedirect = config.redirectUrl || "https://obrigado.seracacau.com.br";
+    const targetRedirect = config.redirectUrl || "https://envio.seracacau.com.br";
     
     // Build search query parameters with complete lead details so external apps receive all data
     const plainTextMessage = buildFormattedMessageText(safeLead);
