@@ -1,0 +1,103 @@
+export interface LeadData {
+  nome: string;
+  whatsapp: string; // WhatsApp
+  email: string;
+  empresa: string; // Nome do estabelecimento
+  cnpj?: string;
+  cep?: string;
+  cidade?: string;
+  instagram?: string;
+  segmento: string;
+  trabalhaComCacau?: string;
+  faturamento: string;
+  operacaoComercial: string;
+  origemLeads: string[]; // Como sua empresa gera novas oportunidades comerciais atualmente (Múltipla seleção)
+  crm: string;
+  desafioPrincipal: string;
+  momentoEmpresa: string;
+  investimentoMarketing: string;
+  equipeComercial: string;
+  prazoInicio: string;
+  lgpd: boolean;
+  
+  // Geolocation / DDD intelligence
+  ddd?: string;
+  uf?: string;
+  estado?: string;
+  regiao?: string;
+  
+  // Metadata & Tracking
+  id: string;
+  createdAt: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmContent?: string;
+  utmTerm?: string;
+  campaignId?: string;
+  adsetId?: string;
+  adId?: string;
+  anuncio?: string;
+  conjunto?: string;
+  campanha?: string;
+  posicionamento?: string;
+  device?: string;
+  browser?: string;
+
+  // Real-time Database Fields requested
+  status?: 'Novo' | 'Aguardando reunião' | 'Reunião agendada' | 'Reunião realizada' | 'Proposta enviada' | 'Fechado' | 'Perdido';
+  leadScore?: number;
+  dataCadastro?: string;
+  horaCadastro?: string;
+  dataReuniao?: string;
+  horaReuniao?: string;
+  googleMeetLink?: string;
+
+  // Optional compat slots for admin panel references
+  telefone?: string;
+  historicoAds?: string;
+  orcamentoAds?: string;
+  mensalidadeGestao?: string;
+  teveAgencia?: string;
+  nomeAgencia?: string;
+  objetivo?: string;
+  prazo?: string;
+}
+
+export interface IntegrationConfig {
+  webhookUrl: string;
+  n8nUrl: string;
+  supabaseUrl: string;
+  supabaseAnonKey: string;
+  metaPixelId: string;
+  gaTrackingId: string;
+  gtmId: string;
+  googleSheetsUrl: string;
+  calendlyUrl?: string;
+  redirectUrl?: string;
+  adminPassword?: string;
+  thankYouVideoUrl?: string;
+  presenterName?: string;
+}
+
+export type QuestionType = 'text' | 'email' | 'tel' | 'select' | 'checkbox' | 'multiselect';
+
+export interface Question {
+  id: string;
+  variable: keyof LeadData;
+  type: QuestionType;
+  title: string;
+  placeholder?: string;
+  options?: string[];
+  required?: boolean;
+  dependsOn?: {
+    variable: keyof LeadData;
+    value: any;
+  };
+}
+
+export interface BookedMeeting {
+  date: string;
+  hour: string;
+  meetLink: string;
+}
