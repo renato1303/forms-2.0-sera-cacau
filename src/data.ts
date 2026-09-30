@@ -51,7 +51,7 @@ export const DEFAULT_INTEGRATIONS_CONFIG: IntegrationConfig = {
   gtmId: 'GTM-XXXXXXX',
   googleSheetsUrl: '', // URL desativada temporariamente até inclusão da nova URL da planilha
   calendlyUrl: 'https://calendly.com/comercial-seracacau/30min',
-  redirectUrl: 'https://contato.seracacau.com.br/',
+  redirectUrl: 'https://obrigado.seracacau.com.br',
   adminPassword: 'sensesales@admin',
   thankYouVideoUrl: 'https://vimeo.com/1206543972',
   presenterName: 'nosso especialista',
@@ -71,6 +71,10 @@ export function getResolvedIntegrationsConfig(): IntegrationConfig {
       ];
       if (parsed.googleSheetsUrl && deprecatedUrls.some(old => parsed.googleSheetsUrl.includes(old))) {
         parsed.googleSheetsUrl = '';
+      }
+      // Auto-migrate previous redirectUrl if it was pointing to old URL
+      if (!parsed.redirectUrl || parsed.redirectUrl.includes('contato.seracacau.com.br')) {
+        parsed.redirectUrl = 'https://obrigado.seracacau.com.br';
       }
       // Auto-migrate placeholder meta pixel ID
       if (!parsed.metaPixelId || parsed.metaPixelId === '1234567890') {
