@@ -1,6 +1,19 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User, signOut } from 'firebase/auth';
-import firebaseConfig from '../../firebase-applet-config.json';
+
+// Load config from environment variables or local config file if present
+const localConfigs = import.meta.glob('../../firebase-applet-config.json', { eager: true }) as Record<string, any>;
+const localConfig = localConfigs['../../firebase-applet-config.json']?.default || {};
+
+const firebaseConfig = {
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || localConfig.projectId || 'gen-lang-client-0799998256',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || localConfig.appId || '',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || localConfig.apiKey || '',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || localConfig.authDomain || '',
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || localConfig.storageBucket || '',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || localConfig.messagingSenderId || '',
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || localConfig.measurementId || '',
+};
 
 // Reuse existing app instance if already initialized
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
