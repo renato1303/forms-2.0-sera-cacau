@@ -20,6 +20,10 @@ export interface LeadData {
   prazoInicio: string;
   lgpd: boolean;
   
+  // Selected Commercial Combo / Kit
+  comboEscolhido?: string;
+  comboValor?: string;
+  
   // Geolocation / DDD intelligence
   ddd?: string;
   uf?: string;
@@ -82,13 +86,24 @@ export interface IntegrationConfig {
 
 export type QuestionType = 'text' | 'email' | 'tel' | 'select' | 'checkbox' | 'multiselect';
 
+export interface QuestionOptionDetail {
+  image?: string;
+  subtitle?: string;
+  badge?: string;
+  icon?: string;
+}
+
 export interface Question {
   id: string;
   variable: keyof LeadData;
   type: QuestionType;
   title: string;
+  subtitle?: string;
+  badge?: string;
+  heroImage?: string;
   placeholder?: string;
   options?: string[];
+  optionDetails?: Record<string, QuestionOptionDetail>;
   required?: boolean;
   dependsOn?: {
     variable: keyof LeadData;

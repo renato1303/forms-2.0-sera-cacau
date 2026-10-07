@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   ArrowRight, ArrowLeft, Send, Sparkles, Check, ChevronRight, ChevronDown,
   HelpCircle, Eye, ShieldCheck, Settings, Globe, PhoneCall, AlertTriangle, Play,
-  Calendar, Video, Lock, User, Building2, FileText, Phone, Mail, MapPin, Instagram, Loader2
+  Calendar, Video, Lock, User, Building2, FileText, Phone, Mail, MapPin, Instagram, Loader2,
+  Coffee, ShoppingBag, Hotel, Store, Utensils, Award, TrendingUp, Layers, Zap, Crown, Target, Sparkle, Flame, Trophy
 } from 'lucide-react';
 import { 
   QUESTIONS_LIST, INITIAL_LEAD_DATA, maskPhone, validateEmail, 
   validatePhone, buildWhatsAppMessage, buildFormattedMessageText, DEFAULT_INTEGRATIONS_CONFIG, calculateLeadScore, getDDDInfo, getResolvedIntegrationsConfig,
-  maskCNPJ, maskCEP, BRAZILIAN_STATES 
+  maskCNPJ, maskCEP, BRAZILIAN_STATES, COMMERCIAL_COMBOS, CommercialCombo
 } from './data';
 import { LeadData, Question, IntegrationConfig, BookedMeeting } from './types';
 import { createClient } from '@supabase/supabase-js';
@@ -37,7 +38,11 @@ export default function App() {
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [computedRedirectUrl, setComputedRedirectUrl] = useState<string>("https://envio.seracacau.com.br");
 
-  // Final Data Capture Form State (matching the user's attached design)
+  const [expandedKits, setExpandedKits] = useState<Record<string, boolean>>({});
+  const toggleKitExpand = (comboId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setExpandedKits(prev => ({ ...prev, [comboId]: !prev[comboId] }));
+  };
   const [finalForm, setFinalForm] = useState({
     nome: '',
     empresa: '',
@@ -445,6 +450,8 @@ export default function App() {
       trabalhaComCacau: safeLead.trabalhaComCacau || '',
       ja_trabalhou_com_cacau: safeLead.trabalhaComCacau || '',
       faturamento: safeLead.faturamento || '',
+      combo: safeLead.comboEscolhido || '',
+      combo_valor: safeLead.comboValor || '',
       leadScore: String(safeLead.leadScore || 0),
       mensagem: plainTextMessage,
       encodedMessage: encodedWhatsappMessage
@@ -1121,16 +1128,22 @@ export default function App() {
   };
 
   // Handle choice selection with auto-advance!
-  const handleOptionSelect = (option: string) => {
+  const handleOptionSelect = (option: string, price?: string) => {
     if (currentQuestion) {
       const activeVariable = currentQuestion.variable;
+      const updatedFields: Record<string, any> = {
+        [activeVariable]: option
+      };
+      if (activeVariable === 'comboEscolhido' && price) {
+        updatedFields.comboValor = price;
+      }
       leadRef.current = {
         ...leadRef.current,
-        [activeVariable]: option
+        ...updatedFields
       };
       setLead(prev => ({
         ...prev,
-        [activeVariable]: option
+        ...updatedFields
       }));
       
       // Auto-advance with visual cue
@@ -1658,7 +1671,7 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
 
         {/* Discreet Modern Progress Bar below header when in questions */}
         {currentStep > 0 && !isCompleted && !isProcessing && (
-          <div className="w-full max-w-2xl mx-auto h-[2.5px] bg-white/15 rounded-full overflow-hidden transition-all duration-300 mt-1">
+          <div className="w-full max-w-xl mx-auto h-[3px] bg-white/10 rounded-full overflow-hidden transition-all duration-300 mt-2">
             <div 
               className="h-full bg-[#C88452] transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
@@ -1669,11 +1682,17 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
 
       {/* Main Container */}
       <main className={`w-full mx-auto flex-1 flex flex-col items-center justify-center z-10 py-6 my-auto transition-all duration-500 ${
-        currentStep === 0 ? 'max-w-4xl px-2 sm:px-0' : currentStep === FINAL_DATA_STEP ? 'max-w-[480px] w-full px-4' : 'max-w-2xl px-2 sm:px-0'
+        currentStep === 0 
+          ? 'max-w-4xl px-2 sm:px-0' 
+          : currentStep === FINAL_DATA_STEP 
+            ? 'max-w-[480px] w-full px-4' 
+            : currentQuestion?.variable === 'comboEscolhido'
+              ? 'max-w-5xl w-full px-2 sm:px-4'
+              : 'max-w-2xl px-2 sm:px-0'
       }`}>
         <AnimatePresence mode="wait">
           
-          {/* STATE 0: WELCOME SCREEN (Directly matching user reference mockup) */}
+          {/* STATE 0: WELCOME SCREEN (Clean & focused on kit selection) */}
           {currentStep === 0 && !isProcessing && !isCompleted && (
             <motion.div
               key="welcome"
@@ -1689,12 +1708,12 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
             >
               {/* Headline & Subtitle matching authentic Será Cacau brand identity */}
               <div className="space-y-4 sm:space-y-5 max-w-3xl mx-auto w-full px-4">
-                <h1 className="font-display font-normal text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[58px] leading-[1.15] text-white tracking-tight antialiased max-w-3xl mx-auto">
-                  Tenha na prateleira o produto que o cliente pergunta, comenta e volta para comprar.
+                <h1 className="font-display font-normal text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[54px] leading-[1.15] text-white tracking-tight antialiased max-w-3xl mx-auto">
+                  Descubra o kit ideal para o seu estabelecimento e tenha o cacau puro da Bahia na sua prateleira.
                 </h1>
 
                 <p className="text-sm sm:text-base md:text-lg text-neutral-300/90 max-w-2xl mx-auto font-sans font-light leading-relaxed antialiased pt-1">
-                  Cacau 100% puro da Bahia com alta margem e rotatividade. Diferencie sua gôndola e atenda a maior virada de hábito de consumo da década: a vida além do café.
+                  Cacau 100% puro da Bahia com alta margem e rotatividade. Responda o diagnóstico rápido, selecione o kit de produtos que faz mais sentido para o seu momento
                 </p>
               </div>
 
@@ -1706,15 +1725,10 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
                   className="w-full sm:w-auto px-10 sm:px-14 py-4 bg-[#C88452] hover:bg-[#B57242] active:bg-[#A46336] text-white font-sans font-semibold text-xs sm:text-sm tracking-[0.18em] uppercase rounded-sm transition-all duration-200 flex items-center justify-center gap-3 cursor-pointer shadow-2xl hover:shadow-[#C88452]/25 hover:translate-y-[-1px] active:translate-y-[0px] group"
                   id="btn-start"
                 >
-                  <span>COMEÇAR DIAGNÓSTICO</span>
+                  <span>ESCOLHER KIT DO ESTABELECIMENTO</span>
                   <ArrowRight className="w-4 h-4 stroke-[2.2px] transition-transform duration-200 group-hover:translate-x-1" />
                 </button>
               </div>
-
-              {/* Minor metadata */}
-              <p className="text-xs font-sans text-neutral-400/80 tracking-wide select-none pt-1">
-                Leva menos de 2 minutos
-              </p>
             </motion.div>
           )}
 
@@ -1734,9 +1748,11 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
             >
               
               {/* Question Title */}
-              <div className="mb-2">
+              <div className="mb-4">
                 <h2 className="font-display font-medium text-xl sm:text-2xl md:text-3xl leading-snug text-white tracking-tight max-w-2xl">
-                  {currentQuestion.title}
+                  {currentQuestion.variable === 'comboEscolhido' && (lead.faturamento === 'Até R$ 50 mil' || lead.faturamento === 'Entre R$ 50 mil e R$ 80 mil')
+                    ? 'Comece agora com o kit inicial para experimentar'
+                    : currentQuestion.title}
                 </h2>
               </div>
 
@@ -1766,43 +1782,194 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
                   </div>
                 )}
 
-                {/* 2. Multiple choice options */}
+                {/* 2. Multiple choice options with clean visual presentation */}
                 {currentQuestion.type === 'select' && currentQuestion.options && (
-                  <div className="space-y-3" id={`select-options-${currentQuestion.variable}`}>
-                    {currentQuestion.options.map((option, idx) => {
-                      const isSelected = lead[currentQuestion.variable] === option;
-                      const optionLetter = String.fromCharCode(65 + idx); // A, B, C, D...
-                      return (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => handleOptionSelect(option)}
-                          className={`w-full flex items-center justify-between p-4 md:p-5 rounded-xl text-left cursor-pointer transition-all duration-200 border group ${
-                            isSelected 
-                              ? 'border-[#C88452] bg-[#C88452]/15 text-white shadow-lg' 
-                              : 'border-white/10 bg-white/[0.04] text-neutral-300 hover:text-white hover:bg-white/[0.08] hover:border-white/30'
-                          }`}
-                          id={`option-${idx}`}
-                        >
-                          <div className="flex items-center gap-4">
-                            <span className={`w-8 h-8 flex items-center justify-center rounded-lg border text-xs font-mono transition-all duration-200 ${
-                              isSelected 
-                                ? 'border-[#C88452] bg-[#C88452] text-white font-bold' 
-                                : 'border-white/20 text-neutral-400 group-hover:border-[#C88452]/50 group-hover:text-white'
-                            }`}>
-                              {optionLetter}
-                            </span>
-                            <span className={`text-sm md:text-base transition-colors ${isSelected ? 'font-semibold text-white' : 'font-light text-neutral-200 group-hover:text-white'}`}>
-                              {option}
-                            </span>
-                          </div>
-                          <div className={`transition-all duration-200 ${isSelected ? 'opacity-100 scale-100 text-[#C88452]' : 'opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 text-neutral-400'}`}>
-                            <Check className="w-5 h-5 stroke-[2.5px]" />
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <>
+                    {/* Question 1: Segmento (Clean cards with images) */}
+                    {currentQuestion.id === 'p1' ? (
+                      <div className="space-y-3" id={`select-options-${currentQuestion.variable}`}>
+                        {currentQuestion.options.map((option, idx) => {
+                          const isSelected = lead[currentQuestion.variable] === option;
+                          const details = currentQuestion.optionDetails?.[option];
+                          return (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => handleOptionSelect(option)}
+                              className={`w-full flex items-center justify-between p-3.5 sm:p-4 rounded-xl text-left cursor-pointer transition-all duration-200 border group ${
+                                isSelected 
+                                  ? 'border-[#C88452] bg-[#C88452]/15 text-white shadow-lg' 
+                                  : 'border-white/10 bg-white/[0.04] text-neutral-300 hover:text-white hover:bg-white/[0.08] hover:border-white/30'
+                              }`}
+                              id={`option-${idx}`}
+                            >
+                              <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
+                                {details?.image && (
+                                  <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-lg overflow-hidden shrink-0 border border-white/10">
+                                    <img 
+                                      src={details.image} 
+                                      alt={option}
+                                      referrerPolicy="no-referrer"
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                )}
+                                <div className="flex items-center">
+                                  <span className={`text-sm sm:text-base transition-colors ${isSelected ? 'font-semibold text-white' : 'font-light text-neutral-200 group-hover:text-white'}`}>
+                                    {option}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className={`transition-all duration-200 shrink-0 ml-3 ${isSelected ? 'opacity-100 scale-100 text-[#C88452]' : 'opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 text-neutral-400'}`}>
+                                <Check className="w-5 h-5 stroke-[2.5px]" />
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : currentQuestion.variable === 'comboEscolhido' ? (
+                      /* Question 4: Kit Selection with Clean Commercial Cards */
+                      <div className="space-y-4" id="select-options-comboEscolhido">
+                        {(() => {
+                          const filteredCombos = COMMERCIAL_COMBOS.filter(combo => {
+                            if (lead.faturamento === 'Até R$ 50 mil' || lead.faturamento === 'Entre R$ 50 mil e R$ 80 mil') {
+                              return combo.id === 'kit-inicial';
+                            } else {
+                              return combo.id !== 'kit-inicial';
+                            }
+                          });
+                          return (
+                            <div className={`grid grid-cols-1 ${filteredCombos.length === 1 ? 'max-w-md mx-auto' : 'md:grid-cols-3'} gap-4 sm:gap-5`}>
+                              {filteredCombos.map((combo) => {
+                            const isSelected = lead.comboEscolhido?.includes(combo.name);
+                            const isExpanded = !!expandedKits[combo.id];
+                            return (
+                              <div
+                                key={combo.id}
+                                onClick={() => handleOptionSelect(combo.name)}
+                                className={`flex flex-col justify-between rounded-xl overflow-hidden cursor-pointer transition-all duration-300 border text-left group ${
+                                  isSelected 
+                                    ? 'border-[#C88452] bg-[#1E1714] shadow-2xl shadow-[#C88452]/20 ring-1 ring-[#C88452]' 
+                                    : 'border-white/10 bg-white/[0.04] hover:border-white/25 hover:bg-white/[0.07]'
+                                }`}
+                              >
+                                <div>
+                                  {/* Kit Photo */}
+                                  <div className="relative h-64 sm:h-72 md:h-80 w-full overflow-hidden bg-[#12100E]">
+                                    <img 
+                                      src={combo.image} 
+                                      alt={combo.name}
+                                      referrerPolicy="no-referrer"
+                                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 brightness-95"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#141210] via-transparent to-transparent pointer-events-none" />
+                                  </div>
+
+                                  {/* Kit Body */}
+                                  <div className="p-4 sm:p-5 space-y-3.5">
+                                    <div>
+                                      <h3 className="text-base sm:text-lg font-medium text-white group-hover:text-[#E09D6C] transition-colors leading-snug">
+                                        {combo.name}
+                                      </h3>
+                                    </div>
+
+                                    {/* Collapsible Items List */}
+                                    <div className="pt-2 border-t border-white/10">
+                                      <button
+                                        type="button"
+                                        onClick={(e) => toggleKitExpand(combo.id, e)}
+                                        className="w-full flex items-center justify-between py-1 text-xs font-mono text-neutral-300 hover:text-white transition-colors cursor-pointer group/btn"
+                                      >
+                                        <span className="uppercase tracking-wide">Conteúdo do kit</span>
+                                        <ChevronDown className={`w-4 h-4 text-[#C88452] transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+                                      </button>
+                                      
+                                      {isExpanded && (
+                                        <ul className="space-y-1.5 pt-2 mt-1 border-t border-white/5 animate-fadeIn">
+                                          {combo.items.map((item, idx) => (
+                                            <li key={idx} className="flex items-start gap-2 text-xs text-neutral-300 font-light leading-snug">
+                                              <Check className="w-3.5 h-3.5 text-[#C88452] shrink-0 mt-0.5" />
+                                              <span>{item}</span>
+                                            </li>
+                                          ))}
+                                        </ul>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Select Button */}
+                                <div className="p-4 sm:p-5 pt-0">
+                                  <button
+                                    type="button"
+                                    className={`w-full py-2.5 px-4 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                                      isSelected 
+                                        ? 'bg-[#C88452] text-white shadow-md' 
+                                        : 'bg-white/10 text-neutral-200 group-hover:bg-[#C88452]/25 group-hover:text-white group-hover:border group-hover:border-[#C88452]/40'
+                                    }`}
+                                  >
+                                    {isSelected ? (
+                                      <>
+                                        <Check className="w-4 h-4 stroke-[2.5px]" />
+                                        <span>KIT ESCOLHIDO</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <span>SELECIONAR KIT</span>
+                                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                            </div>
+                          );
+                        })()}
+                        <p className="text-[11px] font-mono text-neutral-400 text-center pt-1 select-none">
+                          Faturamento direto de fábrica com nota fiscal e suporte comercial para revenda.
+                        </p>
+                      </div>
+                    ) : (
+                      /* Question 3 and other Select Options (Clean & minimalist) */
+                      <div className="space-y-3" id={`select-options-${currentQuestion.variable}`}>
+                        {currentQuestion.options.map((option, idx) => {
+                          const isSelected = lead[currentQuestion.variable] === option;
+                          const optionLetter = String.fromCharCode(65 + idx);
+                          return (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => handleOptionSelect(option)}
+                              className={`w-full flex items-center justify-between p-4 md:p-5 rounded-xl text-left cursor-pointer transition-all duration-200 border group ${
+                                isSelected 
+                                  ? 'border-[#C88452] bg-[#C88452]/15 text-white shadow-lg' 
+                                  : 'border-white/10 bg-white/[0.04] text-neutral-300 hover:text-white hover:bg-white/[0.08] hover:border-white/30'
+                              }`}
+                              id={`option-${idx}`}
+                            >
+                              <div className="flex items-center gap-4">
+                                <span className={`w-8 h-8 flex items-center justify-center rounded-lg border text-xs font-mono transition-all duration-200 ${
+                                  isSelected 
+                                    ? 'border-[#C88452] bg-[#C88452] text-white font-bold' 
+                                    : 'border-white/20 text-neutral-400 group-hover:border-[#C88452]/50 group-hover:text-white'
+                                }`}>
+                                  {optionLetter}
+                                </span>
+                                <span className={`text-sm md:text-base transition-colors ${isSelected ? 'font-semibold text-white' : 'font-light text-neutral-200 group-hover:text-white'}`}>
+                                  {option}
+                                </span>
+                              </div>
+                              <div className={`transition-all duration-200 ${isSelected ? 'opacity-100 scale-100 text-[#C88452]' : 'opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 text-neutral-400'}`}>
+                                <Check className="w-5 h-5 stroke-[2.5px]" />
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </>
                 )}
 
                 {/* 2.1 Multiple-selection options (Multiselect) */}
@@ -1956,6 +2123,27 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
               className="w-full text-left space-y-4 sm:space-y-4.5"
               id="final-data-step-card"
             >
+              {/* Selected Kit Reassurance Bar */}
+              {lead.comboEscolhido && (
+                <div className="p-3.5 sm:p-4 rounded-xl bg-[#1A1613] border border-[#C88452]/40 flex items-center justify-between gap-3 mb-1 shadow-lg">
+                  <div className="min-w-0">
+                    <span className="text-[10px] font-mono text-[#E09D6C] uppercase tracking-wider block">
+                      Kit Comercial Selecionado
+                    </span>
+                    <span className="text-sm font-medium text-white truncate block">
+                      {lead.comboEscolhido}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentStep(4)}
+                    className="text-xs font-mono text-[#C88452] hover:text-white underline shrink-0 transition-colors cursor-pointer"
+                  >
+                    Alterar
+                  </button>
+                </div>
+              )}
+
               {/* 1. NOME COMPLETO */}
               <div>
                 <label className="text-[11px] font-sans font-medium uppercase tracking-[0.16em] text-[#9A9895] block mb-2">

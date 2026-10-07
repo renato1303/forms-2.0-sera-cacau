@@ -1,5 +1,87 @@
 import { Question, LeadData, IntegrationConfig } from './types';
 
+export interface CommercialCombo {
+  id: string;
+  name: string;
+  badge: string;
+  price: string;
+  installment: string;
+  margin: string;
+  image: string;
+  items: string[];
+  targetFaturamento?: string[];
+}
+
+export const COMMERCIAL_COMBOS: CommercialCombo[] = [
+  {
+    id: 'kit-inicial',
+    name: 'Kit Inicial',
+    badge: 'Kit Inicial Recomendado',
+    price: 'R$ 795,00',
+    installment: 'Total do kit',
+    margin: '',
+    image: '/ChatGPT%20Image%207%20de%20out.%20de%202026,%2013_49_00.png',
+    items: [
+      '2x 1kg Gotas',
+      '1x 210g Gotas',
+      '1x 250g Nibs',
+      'Chá de Casca de Cacau'
+    ],
+    targetFaturamento: ['Até R$ 50 mil', 'Entre R$ 50 mil e R$ 80 mil']
+  },
+  {
+    id: 'mix-balcao',
+    name: 'MIX PARA TESTE DE BALCÃO E GIRO',
+    badge: 'Mix de Alta Margem',
+    price: 'R$ 1.300,00',
+    installment: 'Total do mix',
+    margin: '',
+    image: '/ChatGPT%20Image%207%20de%20out.%20de%202026,%2013_49_00.png',
+    items: [
+      'Pote de 105g: 5 und',
+      'Potes de 210g: 5 und',
+      'Nibs 75g: 5 und',
+      'Nibs 250g: 5 und',
+      'Barra 200g: 5 und'
+    ],
+    targetFaturamento: ['Entre R$ 80 mil e R$ 100 mil', 'Acima de R$ 100 mil']
+  },
+  {
+    id: 'mix-rotatividade',
+    name: 'MIX PARA ALTA ROTATIVIDADE',
+    badge: 'Mix Recomendado Rede',
+    price: 'R$ 2.670,00',
+    installment: 'Total do mix',
+    margin: '',
+    image: '/ChatGPT%20Image%207%20de%20out.%20de%202026,%2013_49_00.png',
+    items: [
+      'Pote de 105g: 10 und',
+      'Potes de 210g: 10 und',
+      'Nibs 75g: 10 und',
+      'Nibs 250g: 10 und',
+      'Barra 200g: 10 un'
+    ],
+    targetFaturamento: ['Entre R$ 80 mil e R$ 100 mil', 'Acima de R$ 100 mil']
+  },
+  {
+    id: 'volume-distribuicao',
+    name: 'VOLUME MAIOR PARA DISTRIBUIÇÃO EM REDE',
+    badge: 'Kit Master Varejo',
+    price: 'R$ 3.095,00',
+    installment: 'Total do kit',
+    margin: '',
+    image: '/ChatGPT%20Image%207%20de%20out.%20de%202026,%2013_49_00.png',
+    items: [
+      'Pote de 105g: 15 und',
+      'Potes de 210g: 15 und',
+      'Nibs 75g: 15 und',
+      'Nibs 250g: 15 und',
+      'Barra 200g: 15 und'
+    ],
+    targetFaturamento: ['Entre R$ 80 mil e R$ 100 mil', 'Acima de R$ 100 mil']
+  }
+];
+
 export const QUESTIONS_LIST: Question[] = [
   {
     id: 'p1',
@@ -13,6 +95,23 @@ export const QUESTIONS_LIST: Question[] = [
       'Mercado / Supermercado',
       'Restaurante / Boutique'
     ],
+    optionDetails: {
+      'Cafeteria': {
+        image: '/cafeteria.jpg'
+      },
+      'Empório / Cerealista': {
+        image: '/emporio.jpg'
+      },
+      'Hotel / Pousada': {
+        image: '/hotel pousada.jpg'
+      },
+      'Mercado / Supermercado': {
+        image: '/mercado.jpeg'
+      },
+      'Restaurante / Boutique': {
+        image: '/restaurante boutique.jpg'
+      }
+    },
     required: true,
   },
   {
@@ -36,6 +135,18 @@ export const QUESTIONS_LIST: Question[] = [
       'Entre R$ 50 mil e R$ 80 mil',
       'Entre R$ 80 mil e R$ 100 mil',
       'Acima de R$ 100 mil'
+    ],
+    required: true,
+  },
+  {
+    id: 'p4',
+    variable: 'comboEscolhido',
+    type: 'select',
+    title: 'Qual kit faz mais sentido para o seu estabelecimento começar?',
+    options: [
+      'Opção 1',
+      'Opção 2',
+      'Opção 3'
     ],
     required: true,
   }
@@ -99,6 +210,8 @@ export const INITIAL_LEAD_DATA: LeadData = {
   segmento: '',
   trabalhaComCacau: '',
   faturamento: '',
+  comboEscolhido: '',
+  comboValor: '',
   operacaoComercial: '',
   origemLeads: [],
   crm: '',
@@ -395,6 +508,9 @@ export function buildFormattedMessageText(lead?: LeadData | Partial<LeadData> | 
   lines.push(`• Segmento da Empresa: ${lead.segmento || 'Não informado'}`);
   lines.push(`• Já trabalha com cacau?: ${trabalhaCacau}`);
   lines.push(`• Faturamento médio mensal: ${lead.faturamento || 'Não informado'}`);
+  if (lead.comboEscolhido) {
+    lines.push(`• Kit Selecionado: ${lead.comboEscolhido}${lead.comboValor ? ` (${lead.comboValor})` : ''}`);
+  }
 
   if (lead.operacaoComercial) {
     lines.push(`• Operação Comercial: ${lead.operacaoComercial}`);

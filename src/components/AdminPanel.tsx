@@ -180,6 +180,8 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
             segmento: row.segmento,
             trabalhaComCacau: row.trabalhaComCacau || row.trabalha_com_cacau || '',
             faturamento: row.faturamento,
+            comboEscolhido: row.comboEscolhido || row.combo || row.combo_escolhido || '',
+            comboValor: row.comboValor || row.combo_valor || '',
             operacaoComercial: row.operacaoComercial || row.operacao_comercial || '',
             origemLeads: parsedOrigem,
             crm: row.crm || '',
@@ -1188,6 +1190,16 @@ export default function AdminPanel({ onClose }: AdminPanelProps) {
                             <span className="text-[10px] font-semibold text-[#A1A1AA] uppercase tracking-wider block">Faturamento Mensal</span>
                             <span className="text-sm text-white font-bold block mt-1">{selectedLead.faturamento || 'Não informado'}</span>
                           </div>
+
+                          {selectedLead.comboEscolhido && (
+                            <div className="bg-[#1A1512] border border-[#C88452]/40 p-3.5 rounded-2xl sm:col-span-2">
+                              <span className="text-[10px] font-semibold text-[#E09D6C] uppercase tracking-wider block">Kit Comercial Escolhido</span>
+                              <span className="text-base text-white font-bold block mt-1">{selectedLead.comboEscolhido}</span>
+                              {selectedLead.comboValor && (
+                                <span className="text-xs text-emerald-400 font-mono block mt-0.5">Valor de atacado: {selectedLead.comboValor}</span>
+                              )}
+                            </div>
+                          )}
 
                           {/* Geolocation / Estado via DDD */}
                           {(() => {
