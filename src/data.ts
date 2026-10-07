@@ -142,7 +142,7 @@ export const QUESTIONS_LIST: Question[] = [
     id: 'p4',
     variable: 'comboEscolhido',
     type: 'select',
-    title: 'Qual kit faz mais sentido para o seu estabelecimento começar?',
+    title: 'Qual kit faz mais sentido para o seu negócio hoje?',
     options: [
       'Opção 1',
       'Opção 2',

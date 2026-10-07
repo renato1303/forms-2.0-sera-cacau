@@ -1725,7 +1725,7 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
                   className="w-full sm:w-auto px-10 sm:px-14 py-4 bg-[#C88452] hover:bg-[#B57242] active:bg-[#A46336] text-white font-sans font-semibold text-xs sm:text-sm tracking-[0.18em] uppercase rounded-sm transition-all duration-200 flex items-center justify-center gap-3 cursor-pointer shadow-2xl hover:shadow-[#C88452]/25 hover:translate-y-[-1px] active:translate-y-[0px] group"
                   id="btn-start"
                 >
-                  <span>ESCOLHER KIT DO ESTABELECIMENTO</span>
+                  <span>ESCOLHER O SEU KIT IDEAL</span>
                   <ArrowRight className="w-4 h-4 stroke-[2.2px] transition-transform duration-200 group-hover:translate-x-1" />
                 </button>
               </div>
