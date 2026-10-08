@@ -20,8 +20,27 @@ import BookingCalendar from './components/BookingCalendar';
 import ThankYouPage from './components/ThankYouPage';
 
 export default function App() {
-  const [lead, setLead] = useState<LeadData>(INITIAL_LEAD_DATA);
-  const leadRef = useRef<LeadData>(INITIAL_LEAD_DATA);
+  const [lead, setLead] = useState<LeadData>(() => {
+    const initial = { ...INITIAL_LEAD_DATA };
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const kitParam = params.get('kit') || params.get('kitEscolhido') || params.get('combo') || params.get('comboEscolhido') || params.get('produto');
+      if (kitParam) initial.comboEscolhido = kitParam;
+      if (params.get('nome')) initial.nome = params.get('nome') || '';
+      if (params.get('email')) initial.email = params.get('email') || '';
+      if (params.get('whatsapp')) initial.whatsapp = params.get('whatsapp') || '';
+      if (params.get('telefone')) initial.whatsapp = params.get('telefone') || '';
+      if (params.get('faturamento')) initial.faturamento = params.get('faturamento') || '';
+      if (params.get('segmento')) initial.segmento = params.get('segmento') || '';
+      if (params.get('empresa')) initial.empresa = params.get('empresa') || '';
+      if (params.get('cnpj')) initial.cnpj = params.get('cnpj') || '';
+    }
+    return initial;
+  });
+  const leadRef = useRef<LeadData>(lead);
+  useEffect(() => {
+    leadRef.current = lead;
+  }, [lead]);
   const [currentStep, setCurrentStep] = useState<number>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -451,6 +470,12 @@ export default function App() {
       ja_trabalhou_com_cacau: safeLead.trabalhaComCacau || '',
       faturamento: safeLead.faturamento || '',
       combo: safeLead.comboEscolhido || '',
+      comboEscolhido: safeLead.comboEscolhido || '',
+      combo_escolhido: safeLead.comboEscolhido || '',
+      kit: safeLead.comboEscolhido || '',
+      kitEscolhido: safeLead.comboEscolhido || '',
+      kit_escolhido: safeLead.comboEscolhido || '',
+      produto: safeLead.comboEscolhido || '',
       combo_valor: safeLead.comboValor || '',
       leadScore: String(safeLead.leadScore || 0),
       mensagem: plainTextMessage,

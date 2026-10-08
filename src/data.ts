@@ -36,7 +36,7 @@ export const COMMERCIAL_COMBOS: CommercialCombo[] = [
     price: 'R$ 1.300,00',
     installment: 'Total do mix',
     margin: '',
-    image: '/ChatGPT%20Image%207%20de%20out.%20de%202026,%2013_49_00.png',
+    image: '/Remove_drop_bags_and_add_20261008150137.jpg',
     items: [
       'Pote de 105g: 5 und',
       'Potes de 210g: 5 und',
@@ -53,7 +53,7 @@ export const COMMERCIAL_COMBOS: CommercialCombo[] = [
     price: 'R$ 2.670,00',
     installment: 'Total do mix',
     margin: '',
-    image: '/ChatGPT%20Image%207%20de%20out.%20de%202026,%2013_49_00.png',
+    image: '/Remove_drop_bags_and_add_20261008150137.jpg',
     items: [
       'Pote de 105g: 10 und',
       'Potes de 210g: 10 und',
@@ -70,7 +70,7 @@ export const COMMERCIAL_COMBOS: CommercialCombo[] = [
     price: 'R$ 3.095,00',
     installment: 'Total do kit',
     margin: '',
-    image: '/ChatGPT%20Image%207%20de%20out.%20de%202026,%2013_49_00.png',
+    image: '/Remove_drop_bags_and_add_20261008150137.jpg',
     items: [
       'Pote de 105g: 15 und',
       'Potes de 210g: 15 und',
