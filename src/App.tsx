@@ -976,6 +976,7 @@ export default function App() {
     const isOldOrDisabledSheets = 
       !config.googleSheetsUrl || 
       !config.googleSheetsUrl.startsWith('http') ||
+      config.googleSheetsUrl.includes('AKfycbxl-OKIPDNXDprlk_t4JxXEeiDtvT9hPR-FnTzI9XNtRYAHN9WK1dgRelCMjw9mJ3wGbA') ||
       config.googleSheetsUrl.includes('AKfycbxv8pRSfIliUoL04yyu6qYk7fDVkhbZrgkCUIRwZH4vgrNPH6anVepkCfV5SYWz6uM') ||
       config.googleSheetsUrl.includes('AKfycbyJSBeAgSpjnOhdYfHUZbSCSVuAGjuxMrJPjzohtECTipLlDxZsdjWCRv9Rg-NrIu6h') ||
       config.googleSheetsUrl.includes('AKfycbwWBZRJxFvksSyLijJhnkk29GOZcFOOIPTPx43K6ttM38sdL-E9XPEA_ZmSxl640mA');
@@ -1085,6 +1086,7 @@ export default function App() {
           trabalhaComCacau: finalLead.trabalhaComCacau || '',
           ja_trabalhou_com_cacau: finalLead.trabalhaComCacau || '',
           faturamento: finalLead.faturamento || '',
+          comboEscolhido: finalLead.comboEscolhido || '',
           operacaoComercial: finalLead.operacaoComercial || '',
           origemLeads: Array.isArray(finalLead.origemLeads) ? finalLead.origemLeads.join(', ') : (finalLead.origemLeads || ''),
           crm: finalLead.crm || '',

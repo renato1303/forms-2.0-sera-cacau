@@ -141,7 +141,7 @@ export const DEFAULT_INTEGRATIONS_CONFIG: IntegrationConfig = {
   metaPixelId: '1378981757464908',
   gaTrackingId: 'G-XXXXXXXXXX',
   gtmId: 'GTM-XXXXXXX',
-  googleSheetsUrl: 'https://script.google.com/macros/s/AKfycbxl-OKIPDNXDprlk_t4JxXEeiDtvT9hPR-FnTzI9XNtRYAHN9WK1dgRelCMjw9mJ3wGbA/exec',
+  googleSheetsUrl: 'https://script.google.com/macros/s/AKfycbzyIFdITn5OKzYWRs2wsgSkrD4IZSsaqZ3BLRkUwMn5e7p_q7VtKkF7XxEAdEhjgatrlw/exec',
   calendlyUrl: 'https://calendly.com/comercial-seracacau/30min',
   redirectUrl: 'https://envio.seracacau.com.br',
   adminPassword: 'sensesales@admin',
@@ -159,10 +159,11 @@ export function getResolvedIntegrationsConfig(): IntegrationConfig {
       const deprecatedUrls = [
         'AKfycbyJSBeAgSpjnOhdYfHUZbSCSVuAGjuxMrJPjzohtECTipLlDxZsdjWCRv9Rg-NrIu6h',
         'AKfycbwWBZRJxFvksSyLijJhnkk29GOZcFOOIPTPx43K6ttM38sdL-E9XPEA_ZmSxl640mA',
-        'AKfycbxv8pRSfIliUoL04yyu6qYk7fDVkhbZrgkCUIRwZH4vgrNPH6anVepkCfV5SYWz6uM'
+        'AKfycbxv8pRSfIliUoL04yyu6qYk7fDVkhbZrgkCUIRwZH4vgrNPH6anVepkCfV5SYWz6uM',
+        'AKfycbxl-OKIPDNXDprlk_t4JxXEeiDtvT9hPR-FnTzI9XNtRYAHN9WK1dgRelCMjw9mJ3wGbA'
       ];
       if (!parsed.googleSheetsUrl || deprecatedUrls.some(old => parsed.googleSheetsUrl.includes(old))) {
-        parsed.googleSheetsUrl = 'https://script.google.com/macros/s/AKfycbxl-OKIPDNXDprlk_t4JxXEeiDtvT9hPR-FnTzI9XNtRYAHN9WK1dgRelCMjw9mJ3wGbA/exec';
+        parsed.googleSheetsUrl = 'https://script.google.com/macros/s/AKfycbzyIFdITn5OKzYWRs2wsgSkrD4IZSsaqZ3BLRkUwMn5e7p_q7VtKkF7XxEAdEhjgatrlw/exec';
       }
       // Auto-migrate previous redirectUrl if it was pointing to old URL
       if (!parsed.redirectUrl || parsed.redirectUrl.includes('contato.seracacau.com.br') || parsed.redirectUrl.includes('obrigado.seracacau.com.br')) {
