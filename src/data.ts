@@ -14,22 +14,6 @@ export interface CommercialCombo {
 
 export const COMMERCIAL_COMBOS: CommercialCombo[] = [
   {
-    id: 'kit-inicial',
-    name: 'Kit Inicial',
-    badge: 'Kit Inicial Recomendado',
-    price: 'R$ 795,00',
-    installment: 'Total do kit',
-    margin: '',
-    image: '/ChatGPT%20Image%207%20de%20out.%20de%202026,%2013_49_00.png',
-    items: [
-      '2x 1kg Gotas',
-      '1x 210g Gotas',
-      '1x 250g Nibs',
-      'Chá de Casca de Cacau'
-    ],
-    targetFaturamento: ['Até R$ 50 mil', 'Entre R$ 50 mil e R$ 80 mil']
-  },
-  {
     id: 'mix-balcao',
     name: 'MIX PARA TESTE DE BALCÃO E GIRO',
     badge: 'Mix de Alta Margem',
@@ -38,13 +22,12 @@ export const COMMERCIAL_COMBOS: CommercialCombo[] = [
     margin: '',
     image: '/Remove_drop_bags_and_add_20261008150137.jpg',
     items: [
-      'Pote de 105g: 5 und',
-      'Potes de 210g: 5 und',
-      'Nibs 75g: 5 und',
-      'Nibs 250g: 5 und',
-      'Barra 200g: 5 und'
-    ],
-    targetFaturamento: ['Entre R$ 80 mil e R$ 100 mil', 'Acima de R$ 100 mil']
+      '5 potes de gotas de 105g',
+      '5 potes de gotas de 210g',
+      '5 pacotes de nibs de 75g',
+      '5 pacotes de nibs de 250g',
+      '5 barras de chocolate de 200g'
+    ]
   },
   {
     id: 'mix-rotatividade',
@@ -53,15 +36,14 @@ export const COMMERCIAL_COMBOS: CommercialCombo[] = [
     price: 'R$ 2.670,00',
     installment: 'Total do mix',
     margin: '',
-    image: '/Remove_drop_bags_and_add_20261008150137.jpg',
+    image: '/76dc44e0-d28a-42ee-8b96-d744ce8f246a.png',
     items: [
-      'Pote de 105g: 10 und',
-      'Potes de 210g: 10 und',
-      'Nibs 75g: 10 und',
-      'Nibs 250g: 10 und',
-      'Barra 200g: 10 un'
-    ],
-    targetFaturamento: ['Entre R$ 80 mil e R$ 100 mil', 'Acima de R$ 100 mil']
+      '10 potes de gotas de 105g',
+      '10 potes de gotas de 210g',
+      '10 pacotes de nibs de 75g',
+      '10 pacotes de nibs de 250g',
+      '10 barras de chocolate de 200g'
+    ]
   },
   {
     id: 'volume-distribuicao',
@@ -70,15 +52,14 @@ export const COMMERCIAL_COMBOS: CommercialCombo[] = [
     price: 'R$ 3.095,00',
     installment: 'Total do kit',
     margin: '',
-    image: '/Remove_drop_bags_and_add_20261008150137.jpg',
+    image: '/15%20unidades%20por%20produto@1x.png',
     items: [
-      'Pote de 105g: 15 und',
-      'Potes de 210g: 15 und',
-      'Nibs 75g: 15 und',
-      'Nibs 250g: 15 und',
-      'Barra 200g: 15 und'
-    ],
-    targetFaturamento: ['Entre R$ 80 mil e R$ 100 mil', 'Acima de R$ 100 mil']
+      '15 potes de gotas de 105g',
+      '15 potes de gotas de 210g',
+      '15 pacotes de nibs de 75g',
+      '15 pacotes de nibs de 250g',
+      '15 barras de chocolate de 200g'
+    ]
   }
 ];
 
@@ -132,9 +113,9 @@ export const QUESTIONS_LIST: Question[] = [
     title: 'Qual é o faturamento médio por mês da sua empresa?',
     options: [
       'Até R$ 50 mil',
-      'Entre R$ 50 mil e R$ 80 mil',
-      'Entre R$ 80 mil e R$ 100 mil',
-      'Acima de R$ 100 mil'
+      'Entre R$ 50 mil e R$ 100 mil',
+      'Entre R$ 100 mil e R$ 200 mil',
+      'Acima de R$ 200 mil'
     ],
     required: true,
   },
@@ -142,7 +123,7 @@ export const QUESTIONS_LIST: Question[] = [
     id: 'p4',
     variable: 'comboEscolhido',
     type: 'select',
-    title: 'Qual kit faz mais sentido para o seu negócio hoje?',
+    title: 'Escolha o kit de sua preferência',
     options: [
       'Opção 1',
       'Opção 2',

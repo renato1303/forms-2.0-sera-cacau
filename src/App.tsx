@@ -284,6 +284,10 @@ export default function App() {
 
   // Filter visible questions dynamically based on dependencies
   const visibleQuestions: Question[] = QUESTIONS_LIST.filter(q => {
+    if (q.variable === 'comboEscolhido') {
+      const faturamentoVal = lead.faturamento;
+      return faturamentoVal === 'Até R$ 50 mil' || faturamentoVal === 'Entre R$ 50 mil e R$ 100 mil';
+    }
     if (!q.dependsOn) return true;
     const parentVal = lead[q.dependsOn.variable];
     return parentVal === q.dependsOn.value;
@@ -448,7 +452,11 @@ export default function App() {
     
     // Redirect to configured URL in Admin Panel (or default)
     const config: IntegrationConfig = getResolvedIntegrationsConfig();
-    const targetRedirect = config.redirectUrl || "https://envio.seracacau.com.br";
+    let targetRedirect = config.redirectUrl || "https://envio.seracacau.com.br";
+    
+    if (safeLead.faturamento === 'Entre R$ 100 mil e R$ 200 mil' || safeLead.faturamento === 'Acima de R$ 200 mil') {
+      targetRedirect = "https://envia.seracacau.com.br";
+    }
     
     // Build search query parameters with complete lead details so external apps receive all data
     const plainTextMessage = buildFormattedMessageText(safeLead);
@@ -1162,6 +1170,13 @@ export default function App() {
       if (activeVariable === 'comboEscolhido' && price) {
         updatedFields.comboValor = price;
       }
+      if (activeVariable === 'faturamento') {
+        if (option === 'Até R$ 50 mil') {
+          updatedFields.comboEscolhido = 'MIX PARA TESTE DE BALCÃO E GIRO';
+        } else if (option === 'Entre R$ 50 mil e R$ 100 mil') {
+          updatedFields.comboEscolhido = 'MIX PARA ALTA ROTATIVIDADE';
+        }
+      }
       leadRef.current = {
         ...leadRef.current,
         ...updatedFields
@@ -1734,16 +1749,20 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
               {/* Headline & Subtitle matching authentic Será Cacau brand identity */}
               <div className="space-y-4 sm:space-y-5 max-w-3xl mx-auto w-full px-4">
                 <h1 className="font-display font-normal text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[54px] leading-[1.15] text-white tracking-tight antialiased max-w-3xl mx-auto">
-                  Descubra o kit ideal para o seu estabelecimento e tenha o cacau puro da Bahia na sua prateleira.
+                  <span className="relative inline-block px-2 py-0.5 my-[-2px]">
+                    <span className="absolute inset-0 bg-[#C88452]/40 transform -rotate-1 skew-x-2 rounded-lg pointer-events-none" />
+                    <span className="relative z-10 text-white">Descubra o kit ideal</span>
+                  </span>
+                  {' '}para o seu estabelecimento e tenha o cacau puro da Bahia na sua prateleira.
                 </h1>
 
                 <p className="text-sm sm:text-base md:text-lg text-neutral-300/90 max-w-2xl mx-auto font-sans font-light leading-relaxed antialiased pt-1">
-                  Cacau 100% puro da Bahia com alta margem e rotatividade. Responda o diagnóstico rápido, selecione o kit de produtos que faz mais sentido para o seu momento
+                  Responda o diagnóstico rápido, selecione o kit de produtos que faz mais sentido para o seu momento
                 </p>
               </div>
 
               {/* Principal CTA Button matching Será Cacau branding */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-3 px-4">
+              <div className="flex flex-col items-center justify-center gap-3 pt-3 px-4">
                 <button
                   type="button"
                   onClick={() => setCurrentStep(1)}
@@ -1753,33 +1772,47 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
                   <span>ESCOLHER O SEU KIT IDEAL</span>
                   <ArrowRight className="w-4 h-4 stroke-[2.2px] transition-transform duration-200 group-hover:translate-x-1" />
                 </button>
+
+                <p className="text-xs sm:text-sm text-neutral-400 font-light tracking-wide pt-1">
+                  Cacau 100% puro da Bahia com alta margem e rotatividade.
+                </p>
               </div>
             </motion.div>
           )}
 
           {/* STATE 1: CONVERSATIONAL QUESTIONS IN LUXURY DARK GLASS */}
           {currentStep > 0 && !isProcessing && !isCompleted && currentQuestion && (
-            <motion.div
-              key={currentQuestion.id}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ 
-                duration: 0.4,
-                ease: [0.16, 1, 0.3, 1]
-              }}
-              className="w-full text-left space-y-6 p-6 sm:p-9 md:p-11 dark-glass-panel rounded-2xl sm:rounded-[28px] shadow-2xl relative overflow-hidden transition-all duration-300 border border-white/10"
-              id={`question-step-${currentStep}`}
-            >
-              
-              {/* Question Title */}
-              <div className="mb-4">
-                <h2 className="font-display font-medium text-xl sm:text-2xl md:text-3xl leading-snug text-white tracking-tight max-w-2xl">
-                  {currentQuestion.variable === 'comboEscolhido' && (lead.faturamento === 'Até R$ 50 mil' || lead.faturamento === 'Entre R$ 50 mil e R$ 80 mil')
-                    ? 'Comece agora com o kit inicial para experimentar'
-                    : currentQuestion.title}
-                </h2>
-              </div>
+            <div className={`w-full mx-auto ${currentQuestion.variable === 'comboEscolhido' ? 'max-w-6xl' : 'max-w-2xl'} space-y-6`}>
+              {/* Standalone H1 Headline when on combo selection step */}
+              {currentQuestion.variable === 'comboEscolhido' && (
+                <div className="text-center mb-6 sm:mb-8 px-4">
+                  <h1 className="font-display font-normal text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white tracking-tight">
+                    {currentQuestion.title}
+                  </h1>
+                </div>
+              )}
+
+              <motion.div
+                key={currentQuestion.id}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ 
+                  duration: 0.4,
+                  ease: [0.16, 1, 0.3, 1]
+                }}
+                className={`w-full text-left space-y-6 ${currentQuestion.variable === 'comboEscolhido' ? 'p-0 sm:p-2 bg-transparent border-none shadow-none' : 'p-6 sm:p-9 md:p-11 dark-glass-panel rounded-2xl sm:rounded-[28px] shadow-2xl border border-white/10'} relative overflow-hidden transition-all duration-300`}
+                id={`question-step-${currentStep}`}
+              >
+                
+                {/* Question Title (only for non-comboEscolhido steps) */}
+                {currentQuestion.variable !== 'comboEscolhido' && (
+                  <div className="mb-4">
+                    <h2 className="font-display font-medium text-xl sm:text-2xl md:text-3xl leading-snug text-white tracking-tight max-w-2xl">
+                      {currentQuestion.title}
+                    </h2>
+                  </div>
+                )}
 
               {/* INPUT TYPE RENDERING */}
               <div className="space-y-4 pt-2">
@@ -1856,70 +1889,64 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
                       /* Question 4: Kit Selection with Clean Commercial Cards */
                       <div className="space-y-4" id="select-options-comboEscolhido">
                         {(() => {
-                          const filteredCombos = COMMERCIAL_COMBOS.filter(combo => {
-                            if (lead.faturamento === 'Até R$ 50 mil' || lead.faturamento === 'Entre R$ 50 mil e R$ 80 mil') {
-                              return combo.id === 'kit-inicial';
-                            } else {
-                              return combo.id !== 'kit-inicial';
-                            }
-                          });
+                          const filteredCombos = COMMERCIAL_COMBOS;
                           return (
-                            <div className={`grid grid-cols-1 ${filteredCombos.length === 1 ? 'max-w-md mx-auto' : 'md:grid-cols-3'} gap-4 sm:gap-5`}>
+                            <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:gap-5 scrollbar-none">
                               {filteredCombos.map((combo) => {
                             const isSelected = lead.comboEscolhido?.includes(combo.name);
                             const isExpanded = !!expandedKits[combo.id];
+                            const isRecommended = 
+                              (lead.faturamento === 'Até R$ 50 mil' && combo.name === 'MIX PARA TESTE DE BALCÃO E GIRO') ||
+                              (lead.faturamento === 'Entre R$ 50 mil e R$ 100 mil' && combo.name === 'MIX PARA ALTA ROTATIVIDADE');
                             return (
                               <div
                                 key={combo.id}
                                 onClick={() => handleOptionSelect(combo.name)}
-                                className={`flex flex-col justify-between rounded-xl overflow-hidden cursor-pointer transition-all duration-300 border text-left group ${
+                                className={`snap-start shrink-0 w-[85%] max-w-[320px] sm:max-w-none sm:w-auto relative overflow-hidden flex flex-col justify-between rounded-xl cursor-pointer transition-all duration-300 border text-left group ${
                                   isSelected 
                                     ? 'border-[#C88452] bg-[#1E1714] shadow-2xl shadow-[#C88452]/20 ring-1 ring-[#C88452]' 
                                     : 'border-white/10 bg-white/[0.04] hover:border-white/25 hover:bg-white/[0.07]'
                                 }`}
                               >
-                                <div>
-                                  {/* Kit Photo */}
-                                  <div className="relative h-64 sm:h-72 md:h-80 w-full overflow-hidden bg-[#12100E]">
+                                <div className="p-4 sm:p-5 space-y-3.5">
+                                  {isRecommended && (
+                                    <div>
+                                      <span className="inline-flex items-center bg-[#C88452] text-white text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md shadow-md">
+                                        Kit Recomendado
+                                      </span>
+                                    </div>
+                                  )}
+                                  {/* Kit Name on top of image */}
+                                  <div>
+                                    <h3 className="text-base sm:text-lg font-medium text-white group-hover:text-[#E09D6C] transition-colors leading-snug">
+                                      {combo.name}
+                                    </h3>
+                                  </div>
+
+                                  {/* Kit Photo (optimized height for mobile: h-36 sm:h-44 md:h-48) */}
+                                  <div className="relative h-36 sm:h-44 md:h-48 w-full overflow-hidden bg-[#12100E] rounded-lg">
                                     <img 
                                       src={combo.image} 
                                       alt={combo.name}
                                       referrerPolicy="no-referrer"
-                                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 brightness-95"
+                                      className="w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-500 brightness-95 p-2"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-[#141210] via-transparent to-transparent pointer-events-none" />
                                   </div>
 
-                                  {/* Kit Body */}
-                                  <div className="p-4 sm:p-5 space-y-3.5">
-                                    <div>
-                                      <h3 className="text-base sm:text-lg font-medium text-white group-hover:text-[#E09D6C] transition-colors leading-snug">
-                                        {combo.name}
-                                      </h3>
-                                    </div>
-
-                                    {/* Collapsible Items List */}
-                                    <div className="pt-2 border-t border-white/10">
-                                      <button
-                                        type="button"
-                                        onClick={(e) => toggleKitExpand(combo.id, e)}
-                                        className="w-full flex items-center justify-between py-1 text-xs font-mono text-neutral-300 hover:text-white transition-colors cursor-pointer group/btn"
-                                      >
-                                        <span className="uppercase tracking-wide">Conteúdo do kit</span>
-                                        <ChevronDown className={`w-4 h-4 text-[#C88452] transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
-                                      </button>
-                                      
-                                      {isExpanded && (
-                                        <ul className="space-y-1.5 pt-2 mt-1 border-t border-white/5 animate-fadeIn">
-                                          {combo.items.map((item, idx) => (
-                                            <li key={idx} className="flex items-start gap-2 text-xs text-neutral-300 font-light leading-snug">
-                                              <Check className="w-3.5 h-3.5 text-[#C88452] shrink-0 mt-0.5" />
-                                              <span>{item}</span>
-                                            </li>
-                                          ))}
-                                        </ul>
-                                      )}
-                                    </div>
+                                  {/* Items List (always visible, no arrow) */}
+                                  <div className="pt-2 border-t border-white/15 space-y-2">
+                                    <p className="text-[11px] font-mono text-neutral-400 uppercase tracking-wide">
+                                      O que vai nesse kit:
+                                    </p>
+                                    <ul className="space-y-1.5">
+                                      {combo.items.map((item, idx) => (
+                                        <li key={idx} className="flex items-start gap-2 text-xs text-neutral-300 font-light leading-snug">
+                                          <Check className="w-3.5 h-3.5 text-[#C88452] shrink-0 mt-0.5" />
+                                          <span>{item}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
                                   </div>
                                 </div>
 
@@ -1954,6 +1981,9 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
                         })()}
                         <p className="text-[11px] font-mono text-neutral-400 text-center pt-1 select-none">
                           Faturamento direto de fábrica com nota fiscal e suporte comercial para revenda.
+                        </p>
+                        <p className="text-[10px] text-neutral-500 text-center select-none pt-0.5">
+                          * Imagens meramente ilustrativas.
                         </p>
                       </div>
                     ) : (
@@ -2132,6 +2162,7 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
               </div>
 
             </motion.div>
+          </div>
           )}
 
           {/* STATE 1.5: FINAL LEAD DATA CAPTURE STEP (Matching attached image exactly) */}
@@ -2407,7 +2438,7 @@ Gostaria de falar com o estrategista que me atenderá para adiantar alguns ponto
       </main>
 
       {/* Footer bar matching reference aesthetics */}
-      <footer className="w-full max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between text-[11px] font-sans text-neutral-400/80 z-10 py-5 px-4 gap-3 border-t border-white/10">
+      <footer className="w-full max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between text-[9px] font-sans text-neutral-400/80 z-10 py-5 px-4 gap-3 border-t border-white/10">
         <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1">
           <span>SERÁ CACAU © 2026</span>
           <span className="hidden md:inline text-neutral-600">•</span>
